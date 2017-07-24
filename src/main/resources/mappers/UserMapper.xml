@@ -151,4 +151,54 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!-- resultType:表示返回值的类型，paramterType:表示参数的类型-->
+  <select id="selectByUsername" resultType="int" parameterType="string">
+  <!--count(1) 比count(*)的执行效率要高，另外#{}#号的使用是为防止sql注入，会预编译-->
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE username=#{username}
+  </select>
+  <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
+<!--不要select * from xxx, 需要什么查什么，要像下面的语句这样！-->
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_user
+    WHERE username=#{username} AND password=#{password}
+  </select>
+  <select id="selectByEmail" resultType="int" parameterType="string">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE email=#{email}
+  </select>
+  
+  <select id="selectQuestionByUsername" resultType="string" parameterType="string">
+    SELECT question
+    FROM mmall_user
+    WHERE username=#{username}
+  </select>
+  <select id="checkAnswer" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE username=#{username}
+    AND question=#{question}
+    AND answer=#{answer}
+  </select>
+  <update id="updatePasswordByUsername" parameterType="map">
+    UPDATE mmall_user
+    SET password=#{passwordNew}, update_time=now()
+    WHERE username=#{username}
+  </update>
+
+  <select id="selectPassword" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE password=#{passwordOld}
+    AND id=#{userId}
+  </select>
+  <select id="selectEmailByUserId" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE email=#{email}
+    AND id != #{userId}
+  </select>
 </mapper>
